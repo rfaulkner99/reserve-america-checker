@@ -2,6 +2,11 @@
 
 campgrounds = [
     {
+    "name": "BROWN TRACT POND", 
+    "ra_url": "https://newyorkstateparks.reserveamerica.com/camping/brown-tract-pond-campground/r/campgroundDetails.do?contractCode=NY&parkId=625",
+    "preferred_sites": ['7', '8', '10', '12', '14', '17', '18', '19', '22', '23', '26', '27', '28', '29', '33', '34', '35', '36', '37', '39', '40', '42', '43', '44', '45', '47', '69', '70', '73', '84', '85', '86', '87', '88', '89', '90']
+    },
+    {
     "name": "MOFFIT BEACH", 
     "ra_url": "https://newyorkstateparks.reserveamerica.com/camping/moffitt-beach-campground/r/campgroundDetails.do?contractCode=NY&parkId=673",
     "preferred_sites": ['106', '107', '109', '112', '114', '117', '118', '182', '183', '185', '187', '191', '192', '193', '196', '197', '198', '200', '202', '203', '205', '207', '210', '212', '214', '215', '216', '218', '220', '221', '223', '224', '226', '229', '231', '232', '233', '234', '235', '236', '237', '238', '239', '240', '241', '242', '244', '245', '247', '248', '250', '251', '252', '253']

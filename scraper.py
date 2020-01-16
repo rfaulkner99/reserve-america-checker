@@ -65,8 +65,8 @@ def sendEmail(text):
     # terminating the session 
     s.quit() 
 
-def send_results(result_date, name, hits):
-    message = "On {}, found available waterfront sites at {}: {}".format(result_date, name,', '.join(hits))
+def send_results(result_date, name, hits, url):
+    message = "On {}, found available waterfront sites at {}: {}.  Book now at: {}".format(result_date, name,', '.join(hits), url)
     sendEmail(message)
     print(message)
 
@@ -114,7 +114,7 @@ def run():
                     hits.append(label)
 
         if hits:
-            send_results(date, campground['name'], hits)
+            send_results(date, campground['name'], hits, campground['ra_url'])
         else:
             message = 'No water sites found for date: ' + date
             #sendEmail(message)

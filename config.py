@@ -2,6 +2,11 @@
 
 campgrounds = [
     {
+    "name": "SCAROON MANOR", 
+    "ra_url": "https://newyorkstateparks.reserveamerica.com/camping/scaroon-manor/r/campgroundDetails.do?contractCode=NY&parkId=3386",
+    "preferred_sites": ['31', '32', '33', '34', '35']
+    },
+    {
     "name": "BROWN TRACT POND", 
     "ra_url": "https://newyorkstateparks.reserveamerica.com/camping/brown-tract-pond-campground/r/campgroundDetails.do?contractCode=NY&parkId=625",
     "preferred_sites": ['7', '8', '10', '12', '14', '17', '18', '19', '22', '23', '26', '27', '28', '29', '33', '34', '35', '36', '37', '39', '40', '42', '43', '44', '45', '47', '69', '70', '73', '84', '85', '86', '87', '88', '89', '90']

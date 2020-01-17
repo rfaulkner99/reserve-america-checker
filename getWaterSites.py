@@ -6,7 +6,7 @@ import urllib
 from bs4 import BeautifulSoup
 
 # Configuration
-url = "https://www.campadk.com/campsitephotos/campgrounds/Brown+Tract+Pond/choosesite"
+url = "https://www.campadk.com/campsitephotos/campgrounds/Scaroon+Manor/choosesite"
 
 USER_AGENT = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.33 Safari/537.36')
 

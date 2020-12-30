@@ -6,13 +6,13 @@ Modified from:  [streeter/reserve-america-scraper](https://github.com/streeter/r
 
 ## Setup
 
+Set up config.py.  Enter date, length of stay and RV length, and campground urls, in this format: [https://floridastateparks.reserveamerica.com/camping/manatee-springs-sp/r/campgroundDetails.do?contractCode=FL&parkId=28105](https://floridastateparks.reserveamerica.com/camping/manatee-springs-sp/r/campgroundDetails.do?contractCode=FL&parkId=281053).
+
 If you want to use email notification via gmail, create a `secrets.py` file like:
 ```
 email=phil@aol.com
 password=abc123
 ```
-
-Set up config.py.  Enter date, length of stay and RV length, and campground urls, in this format: [https://floridastateparks.reserveamerica.com/camping/manatee-springs-sp/r/campgroundDetails.do?contractCode=FL&parkId=28105](https://floridastateparks.reserveamerica.com/camping/manatee-springs-sp/r/campgroundDetails.do?contractCode=FL&parkId=281053).
 
 For new york, an additional script `getWaterSites.py` scrapes campadk.com to find a list of waterfront campsites
 

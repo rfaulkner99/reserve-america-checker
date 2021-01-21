@@ -94,17 +94,30 @@ def run():
                 siteType = cells[2].text
 
                 #could have string like: '15 Back-In'
-                equip_length_driveway = cells[4].text
+                equip_length_driveway = cells[4].text.split(' ')
 
                 length = 0
                 driveway = ''
 
-                if len(equip_length_driveway) > 1 and ' ' not in equip_length_driveway:
-                    length = equip_length_driveway
+                #print('equip_length_driveway', equip_length_driveway)
 
-                if ' ' in equip_length_driveway:
-                    length = equip_length_driveway.split(' ')[0]
-                    driveway = equip_length_driveway.split(' ')[1]
+                #so many permutations of possibilities for this field, ugh
+                if len(equip_length_driveway) == 1:
+                    #if its length one and is a number, its a length
+                    if equip_length_driveway[0].isnumeric():
+                        length = equip_length_driveway[0]
+
+                    #otherwise its a driveway
+                    else:
+                        driveway = equip_length_driveway[0]
+
+                #if we have two items, it should be a length and a driveway
+                if len(equip_length_driveway) == 2:
+                    if len(equip_length_driveway[0]) > 0:
+                        length = equip_length_driveway[0]
+                    else:
+                        length = 0
+                    driveway = equip_length_driveway[1]
 
                 status = cells[l - 1].text
 
@@ -113,14 +126,30 @@ def run():
 
                 #print('sitetype:', label, siteType, length, driveway)
 
-                if status.startswith('available') and siteType != 'Tent Only' and int(length) > config.rv_length:
-                #if status.startswith('available'):
-                    #print('sitetype:', label, siteType, length, driveway)
-                    available = True
+                #are we looking for RV site
+                if config.rv_length > 0:
+                    #print('searching RV sites')
+
+                    if status.startswith('available') and siteType != 'Tent Only' and int(length) > config.rv_length:
+                    #if status.startswith('available'):
+                        #print('sitetype:', label, siteType, length, driveway)
+                        available = True
+
+                    else:
+                        found_unavailable = True
+                            
+                #SEARCHING TENT SITES
                 else:
-                    found_unavailable = True
-                
+                    #print('searching tent sites')
+                    if status.startswith('available'):
+                        available = True
+
+                    else:
+                        found_unavailable = True
+
                 if available:
+
+                    #print('sitetype:', label, siteType, length, driveway)
 
                     #if there are preferred sites defined:
                     if 'preferred_sites' in campground:
@@ -137,7 +166,7 @@ def run():
             if found_unavailable:
                 print('Were done here')
             else:
-                print('Additional work to do looking through next pages')
+                print('Looking through additional pages...')
 
                 for link in br.links():
                     #print(link)

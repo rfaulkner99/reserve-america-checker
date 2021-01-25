@@ -5,8 +5,55 @@ import sys
 import mechanize
 from bs4 import BeautifulSoup
 import config
+import secrets
+import argparse
 
+# Create the parser
+parser = argparse.ArgumentParser(description='Find a campsite!')
+parser.add_argument('date', type=str, help='Date in this format: "02/13/2021"' )
+parser.add_argument('duration', type=int, help='Legnth of stay in days')
+parser.add_argument('area', type=str, choices=config.campgrounds.keys(), help='Search area group, setup in config.py')
+parser.add_argument('rv_length', type=int, help='RV length, set to "0" for all')
+parser.add_argument('email', type=bool, help='Do you want email? need secrets.py to function')
+args = parser.parse_args()
+
+DATE = args.date
+DURATION = args.duration
+AREA = args.area
+LENGTH = args.rv_length
+EMAIL = args.email
 USER_AGENT = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.33 Safari/537.36')
+
+# Try to import Twilio
+try:
+    from twilio.rest import Client as TwilioClient
+except ImportError:
+    TwilioClient = None
+
+# Optional Twilio configuration
+twilio_account_sid = secrets.twilio_account_sid
+twilio_auth_token = secrets.twilio_auth_token
+twilio_from_number = secrets.twilio_from_number
+twilio_to_number = secrets.twilio_to_number
+has_twilio = all([
+    TwilioClient,
+    twilio_account_sid,
+    twilio_auth_token,
+    twilio_from_number,
+    twilio_to_number,
+])
+
+def send_sms(message):
+    if not has_twilio:
+        return
+
+    #msg = "{}. {}".format(message, url)
+    msg = message
+
+    client = TwilioClient(twilio_account_sid, twilio_auth_token)
+    
+    for to_number in twilio_to_number:
+        message = client.messages.create(to=to_number, from_=twilio_from_number, body=msg)
 
 def sendEmail(subject, text):
     #https://www.geeksforgeeks.org/send-mail-attachment-gmail-account-using-python/
@@ -20,7 +67,6 @@ def sendEmail(subject, text):
     from email.mime.text import MIMEText 
     from email.mime.base import MIMEBase 
     from email import encoders
-    import secrets
 
     fromaddr = secrets.email
     toaddr = secrets.email
@@ -62,12 +108,11 @@ def sendEmail(subject, text):
     s.quit() 
 
 def send_results(result_date, name, hits, ra_url):
-    message = "On {}, found available sites at {}: {}  \r\nBook now at: {}".format(result_date, name,', '.join(hits), ra_url)
-    subject = name + " " + result_date + " Campsite Found"
-    # for site in hits:
-    #     message += "\r\nCampsite Photos: " + campadk_url + site.lstrip("0")
-    sendEmail(subject, message)
-    print(subject)
+	subject = name + " " + result_date + " Campsite Found!!"
+	message = "{}, found available sites at {}: {}  \r\nBook now at: {}".format(result_date, name,', '.join(hits), ra_url)
+	print(message)
+	sendEmail(subject, message)
+	send_sms(subject)
 
 def run():
     print("SCRIPT STARTING")
@@ -127,10 +172,10 @@ def run():
                 #print('sitetype:', label, siteType, length, driveway)
 
                 #are we looking for RV site
-                if config.rv_length > 0:
+                if LENGTH > 0:
                     #print('searching RV sites')
 
-                    if status.startswith('available') and siteType != 'Tent Only' and int(length) > config.rv_length:
+                    if status.startswith('available') and siteType != 'Tent Only' and int(length) > LENGTH:
                     #if status.startswith('available'):
                         #print('sitetype:', label, siteType, length, driveway)
                         available = True
@@ -182,7 +227,7 @@ def run():
                             parse_page(response)
 
 
-    for campground in config.campgrounds:
+    for campground in config.campgrounds[AREA]:
         total_hits = []
 
         # Create browser
@@ -206,8 +251,8 @@ def run():
         # Fill out form
         br.select_form(name="unifSearchForm")
         br.form.set_all_readonly(False)  # allow changing the .value of all controls
-        br.form["campingDate"] = config.date
-        br.form["lengthOfStay"] = config.length_of_stay
+        br.form["campingDate"] = DATE
+        br.form["lengthOfStay"] = str(DURATION)
         response = br.submit()
 
         #initial kickoff
@@ -215,12 +260,12 @@ def run():
         parse_page(response)
 
         if len(total_hits) > 0:
-            print(config.date, name, total_hits, campground['ra_url'])
+            print(DATE, name, total_hits, campground['ra_url'])
 
-            if config.email:
-                send_results(config.date, name, total_hits, campground['ra_url'])
+            if EMAIL:
+                send_results(DATE, name, total_hits, campground['ra_url'])
         else:
-            message = 'No sites found for date: ' + config.date
+            message = 'No sites found for date: ' + DATE
             #sendEmail(message)
             print(message)
 
